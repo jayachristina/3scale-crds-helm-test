@@ -1,0 +1,8 @@
+argocd:
+  enabled: true
+  syncwave: "1"
+
+backend:
+  name: "Globex Order Placement Backend"
+  systemName: "globex-order-placement-backend"
+  privateBaseURL: ""

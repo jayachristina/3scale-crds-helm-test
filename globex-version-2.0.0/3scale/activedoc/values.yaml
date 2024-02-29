@@ -1,0 +1,13 @@
+argocd:
+  enabled: true
+  syncwave: "2"
+
+activedoc:
+  name: "Globex Mobile Gateway ActiveDoc"
+  systemName: globex-order-placement-activedoc
+  issuerEndpoint: ""
+
+
+product:
+  systemName: globex-order-placement-product
+  

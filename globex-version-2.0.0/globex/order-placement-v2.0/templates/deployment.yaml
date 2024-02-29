@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "order-placement-v2-0.name" . }}
+  labels:
+    {{- include "order-placement-v2-0.labels" . | nindent 4 }}
+    app.openshift.io/runtime: quarkus
+    app.kubernetes.io/part-of: v2-0
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "order-placement-v2-0.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "order-placement-v2-0.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "order-placement-v2-0.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env: 
+            - name: JSON_SCHEMA
+              value: order-placement-payload_v2.0.json
+            - name: ORDER_PLACEMENT_API
+              value: <replace-me-with-webhook.site-url>
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+  

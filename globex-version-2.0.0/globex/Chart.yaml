@@ -1,0 +1,17 @@
+apiVersion: v2
+name: globex
+description: A Helm chart for Kubernetes
+type: application
+version: 0.1.0
+
+dependencies:
+  - name: order-placement-v2-0
+    version: 0.1.0
+    repository: file://order-placement-v2.0
+  - name: globex-ui-v2-0
+    version: 0.1.0
+    repository: file://globex-ui-v2.0
+  # - name: mongodb
+  #   version: 0.1.0
+  #   repository: file://mongodb
+  
