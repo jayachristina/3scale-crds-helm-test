@@ -1,0 +1,506 @@
+apiVersion: capabilities.3scale.net/v1beta1
+kind: ActiveDoc
+metadata:
+  name: globex-order-placement-api-doc-v2-0-0
+spec:
+  activeDocOpenAPIRef:
+    secretRef:
+      name: order-placement-activedoc-v2-0-0   
+  providerAccountRef:
+    name: 3scale-tenant-secret
+  productSystemName: globex-order-placement-product-v2-0-0
+  published: true
+  name: globex-order-placement-api-doc-v2-0-0
+
+---
+
+kind: Secret
+apiVersion: v1
+metadata:
+  name: order-placement-activedoc-v2-0-0
+type: Opaque
+stringData:
+  order-placement-openapi.yaml: |
+    ---
+    openapi: 3.0.2
+    info:
+        title: OrderPlacementAPI
+        version: 1.0.0
+        description: 'API Call to place an order with product, address and user details'
+        license:
+            name: MIT License
+            url: 'https://opensource.org/licenses/MIT'
+    paths:
+        /v1/placeorder:
+            post:
+                requestBody:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/checkout_payload'
+                            examples:
+                                basic_checkout:
+                                    value:
+                                        promotion:
+                                            amount: '30.00'
+                                            title: XYZ Promotion
+                                            description: Promotional item for blackfriday.
+                                            value: '30.00'
+                                            value_type: fixed_amount
+                                            applicable: true
+                                        billing_address:
+                                            address1: 3764 Present Boulevard
+                                            address2: ''
+                                            city: Tennessee
+                                            country: US
+                                            first_name: Allison
+                                            last_name: Silva
+                                            phone: +1-123456789
+                                            state: Tennessee
+                                            zip: 38106-6947
+                                        shipping_address:
+                                            address1: 3764 Present Boulevard
+                                            address2: ''
+                                            city: Tennessee
+                                            country: US
+                                            first_name: Alison
+                                            last_name: Silva
+                                            phone: +1-123456789
+                                            state: Tennessee
+                                            zip: 38106-6947
+                                        line_items:
+                                            -
+                                                price: 30
+                                                product_id: IPOD2008GREEN
+                                                quantity: 1
+                                                sku: IPOD2008GREEN
+                                            -
+                                                price: 2.45
+                                                product_id: PENCIL34567
+                                                quantity: 20
+                                                sku: PENCIL34567
+                                        user_info:
+                                            userId: 7672a49e-9afc-498f-91bc-98f881179f2c
+                                            email: asilva@email.com
+                                            customer_id: '345678'
+                                            username: asilva
+                                        payment:
+                                            name_on_card: Allison Silva
+                                            credit_card_number: '12345678901234'
+                                            card_expiry_date:
+                                                year: 2022
+                                                month: 7
+                                                day: 27
+                                            card_cvv: '222'
+                                        currency:
+                                            currency: USD
+                    required: true
+                tags: []
+                parameters:
+                    -
+                        name: api_key
+                        description: 'Added as a part of security scheme: apikey'
+                        schema: {}
+                        in: header
+                responses:
+                    '200':
+                        $ref: '#/components/responses/basic_checkout'
+                    '400':
+                        description: Bad Request
+                    '403':
+                        description: Forbidden
+                    '500':
+                        description: Internal Server Error
+    components:
+        schemas:
+            promotion:
+                title: Root Type for promotion
+                description: ''
+                type: object
+                properties:
+                    amount:
+                        type: string
+                    title:
+                        type: string
+                    description:
+                        type: string
+                    value:
+                        type: string
+                    value_type:
+                        type: string
+                    applicable:
+                        type: boolean
+                example:
+                    amount: '30.00'
+                    title: XYZ Promotion
+                    description: Promotional item for blackfriday.
+                    value: '30.00'
+                    value_type: fixed_amount
+                    applicable: true
+            billing_address:
+                title: Root Type for billing_address
+                description: ''
+                required:
+                    - address1
+                    - city
+                    - country
+                    - first_name
+                    - last_name
+                    - phone
+                    - state
+                    - zip
+                type: object
+                properties:
+                    address1:
+                        type: string
+                    address2:
+                        type: string
+                    city:
+                        type: string
+                    country:
+                        type: string
+                    first_name:
+                        type: string
+                    last_name:
+                        type: string
+                    phone:
+                        type: string
+                    zip:
+                        type: string
+                    state:
+                        type: string
+                example:
+                    address1: Chestnut Street 92
+                    address2: Suite 300
+                    city: Louisville
+                    country: US
+                    phone: 555-625-1199
+                    state: KY
+                    zip: '40202'
+            line_items:
+                title: Root Type for line_items
+                description: ''
+                type: array
+                items:
+                    $ref: '#/components/schemas/line_items'
+                example:
+                    -
+                        price: 19.99
+                        product_id: '632910392'
+                        quantity: 12
+                        sku: IPOD2008GREEN
+                    -
+                        price: 49.99
+                        product_id: '23761357'
+                        quantity: 10
+                        sku: 'UYDGR#45673'
+            line_item:
+                title: Root Type for line_item
+                description: ''
+                required:
+                    - quantity
+                type: object
+                properties:
+                    price:
+                        type: number
+                    product_id:
+                        type: string
+                    quantity:
+                        type: integer
+                    sku:
+                        type: string
+                example:
+                    price: 19.99
+                    product_id: 632910392
+                    quantity: 22
+                    sku: IPOD2008GREEN
+            checkout_payload:
+                description: ''
+                required:
+                    - billing_address
+                    - line_items
+                    - user_info
+                    - shipping_address
+                    - currency
+                    - payment
+                type: object
+                properties:
+                    promotion:
+                        $ref: '#/components/schemas/promotion'
+                        description: ''
+                    billing_address:
+                        $ref: '#/components/schemas/billing_address'
+                        description: ''
+                    line_items:
+                        description: ''
+                        type: array
+                        items:
+                            $ref: '#/components/schemas/line_item'
+                    user_info:
+                        $ref: '#/components/schemas/user_info'
+                        description: ''
+                    shipping_address:
+                        $ref: '#/components/schemas/shipping_address'
+                        description: ''
+                    currency:
+                        $ref: '#/components/schemas/currency'
+                        description: ''
+                    payment:
+                        $ref: '#/components/schemas/payment'
+                        description: ''
+                example:
+                    promotion:
+                        amount: '30.00'
+                        title: XYZ Promotion
+                        description: Promotional item for blackfriday.
+                        value: '30.00'
+                        value_type: fixed_amount
+                        applicable: true
+                    billing_address:
+                        address1: 3764 Elvis Presley Boulevard
+                        address2: ''
+                        city: Tennessee
+                        country: US
+                        first_name: Elvis
+                        last_name: Presley
+                        phone: +1-123456789
+                        state: Tennessee
+                        zip: 38106-6947
+                    shipping_address:
+                        address1: 3764 Elvis Presley Boulevard
+                        address2: ''
+                        city: Tennessee
+                        country: US
+                        first_name: Elvis
+                        last_name: Presley
+                        phone: +1-123456789
+                        state: Tennessee
+                        zip: 38106-6947
+                    line_items:
+                        -
+                            price: 30
+                            product_id: IPOD2008GREEN
+                            quantity: 1
+                            sku: IPOD2008GREEN
+                        -
+                            price: 2.45
+                            product_id: PENCIL34567
+                            quantity: 20
+                            sku: PENCIL34567
+                    user_info:
+                        userId: 7672a49e-9afc-498f-91bc-98f881179f2c
+                        email: elvispresley@jazz.com
+                        customer_id: '345678'
+                        username: elvispresley
+                    currency:
+                        currency: USD
+                    payment:
+                        mode: card
+                        credit_card_number: 1234-2345-3456
+                        card_expiry_date:
+                            year: 2022
+                            month: 7
+                            day: 27
+                        card_cvv: '123'
+            user_info:
+                title: Root Type for user_info
+                description: ''
+                required:
+                    - username
+                type: object
+                properties:
+                    userId:
+                        type: string
+                    email:
+                        type: string
+                    customer_id:
+                        type: string
+                    username:
+                        description: ''
+                        type: string
+                example: |-
+                    {
+                        "userId": "7672a49e-9afc-498f-91bc-98f881179f2c",
+                        "email": "bob.norman@mail.example.com",
+                        "customer_id": 1234,
+                        username: "bobnorman"
+                    }
+            currency:
+                title: Root Type for currency
+                description: ''
+                type: object
+                properties:
+                    currency:
+                        type: string
+                example:
+                    currency: USD
+            checkout_response:
+                title: Root Type for checkout_response
+                description: ''
+                type: object
+                properties:
+                    order_id:
+                        type: string
+                    status:
+                        type: string
+                example:
+                    order_id: '23456789'
+                    status: confirmed
+            shipping_address:
+                title: Root Type for shipping_address
+                description: ''
+                required:
+                    - address1
+                    - city
+                    - country
+                    - first_name
+                    - last_name
+                    - phone
+                    - state
+                    - zip
+                type: object
+                properties:
+                    address1:
+                        type: string
+                    address2:
+                        type: string
+                    city:
+                        type: string
+                    country:
+                        type: string
+                    first_name:
+                        type: string
+                    last_name:
+                        type: string
+                    phone:
+                        type: string
+                    zip:
+                        type: string
+                    state:
+                        type: string
+                example:
+                    address1: Chestnut Street 92
+                    address2: Suite 300
+                    city: Louisville
+                    country: US
+                    phone: 555-625-1199
+                    state: KY
+                    zip: '40202'
+            payment:
+                title: Root Type for payment
+                description: ''
+                required:
+                    - card_expiry_date
+                type: object
+                properties:
+                    mode:
+                        type: string
+                    credit_card_number:
+                        type: string
+                    card_expiry_date:
+                        $ref: '#/components/schemas/date-format'
+                    card_cvv:
+                        type: string
+                    name_on_card:
+                        description: ''
+                        type: string
+                example:
+                    mode: card
+                    credit_card_number: 1234-2345-3456
+                    card_expiry_date:
+                        year: 2022
+                        month: 7
+                        day: 27
+                    card_cvv: '123'
+            date-format:
+                title: Root Type for date-format
+                description: ''
+                required:
+                    - month
+                    - day
+                    - year
+                type: object
+                properties:
+                    year:
+                        type: integer
+                    month:
+                        type: integer
+                    day:
+                        type: integer
+                example:
+                    year: 2022
+                    month: 7
+                    day: 27
+        responses:
+            basic_checkout:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/checkout_response'
+                        examples:
+                            basic_checkout:
+                                value:
+                                    order_id: '34567890'
+                                    status: CONFIRMED
+                description: 200 OK
+    tags:
+        -
+            name: retail
+            description: ''
+        -
+            name: order-placement
+            description: ''
+
+---
+
+apiVersion: capabilities.3scale.net/v1beta1
+kind: Backend
+metadata:
+  name: globex-order-placement-backend-v2-0-0
+spec:
+  name: Globex Order Placement Backend V2.0.0
+  systemName: globex-order-placement-backend-v2-0-0
+  privateBaseURL:  http://order-placement.globex-user1.svc.cluster.local:8080
+  providerAccountRef:
+    name: 3scale-tenant-secret
+  metrics:
+    hits:
+      description: Number of API hits
+      friendlyName: Hits
+      unit: "hit"
+  mappingRules:
+    - httpMethod: POST
+      pattern: "/"
+      increment: 1
+      metricMethodRef: hits
+
+---
+
+apiVersion: capabilities.3scale.net/v1beta1
+kind: Product
+metadata:
+  name: globex-order-placement-product-v2-0-0
+spec:
+  name: Globex Order Placement Product V2.0.0
+  systemName: globex-order-placement-product-v2-0-0
+  providerAccountRef:
+    name: 3scale-tenant-secret
+  deployment:
+    apicastHosted:
+      authentication:
+        userkey:
+          authUserKey: user_key 
+  applicationPlans:
+    basic:
+      name: "Globex Basic Plan"
+      setupFee: "0"
+      published: true
+    premium:
+      name: "Globex Premium Plan"
+      setupFee: "100"
+      published: true
+  backendUsages:
+    globex-order-placement-backend-v2-0-0:
+      path: /
+
+
