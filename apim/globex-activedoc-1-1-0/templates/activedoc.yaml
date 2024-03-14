@@ -1,0 +1,15 @@
+apiVersion: capabilities.3scale.net/v1beta1
+kind: ActiveDoc
+metadata:
+  name: {{ include "globex-activedoc-1-1-0.name" . }}
+  annotations:
+    {{- include "globex-activedoc-1-1-0.argocd-syncwave" . | nindent 4 }}
+spec:
+  activeDocOpenAPIRef:
+    url: {{ .Values.activeDocOpenAPIRef.url }}
+  published: true
+  name: {{ .Values.activedoc.name }}
+  providerAccountRef:
+    name: 3scale-tenant-secret
+  productSystemName: {{ .Values.product.systemName }}
+  
